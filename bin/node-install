@@ -1,7 +1,0 @@
-#!/bin/bash +x
-#
-# Node Install Script for Nemesis
-# /srv/nemesis/bin/node-install
-# (c) 2013 Sam Caldwell.  All Rights Reserved.
-# 
-

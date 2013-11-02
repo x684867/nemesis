@@ -11,6 +11,19 @@ export PATH=$PATH:/srv/nemesis/bin/
 export BUILD_PATH=/srv/nemesis/src
 export TIME_SERVER="0.pool.ntp.org"
 
+[ -z "$1" ] && echo "missing argument.  Use -h or --help for usage." && exit 1
+[ "$1" == "-h" ] || [ "$1" == "--help" ] && {
+	echo " "
+	echo "USAGE:"
+	echo " "
+	echo "   $0 -h --help shows this screen"
+	echo "   $0 <server_type> installs a given server configuration."
+	echo " "
+	echo "server_type={audit,broker,cipherstore,keystore}"
+	echo " "
+	exit 1
+}
+
 [ "$(grep DISTRIB_ID /etc/lsb-release | awk -F \= '{print $2}')" != "Ubuntu" ] && {
 	echo "This script will only work with Ubuntu."
 	echo "It would probably work with Debian, but it hasn't been tested."
@@ -134,5 +147,11 @@ echo "Restarting network..."
 /etc/init.d/networking restart &> /dev/null
 [ "$?" != "0" ] && echo "Network failed to restart" && exit 1
 echo "...Network restarted"
+
+echo "Modifying hostname (\${server_type}_\${IP_NO_DOTS})"
+NEW_HOSTNAME="${SERVER_TYPE}_$(ifconfig eth0 | grep HWaddr | awk '{print $5}' | tr -d \:)"
+sed -i -e "s/$(hostname)/$NEW_HOSTNAME/" /etc/hostname
+sed -i -e "s/$(hostname)/$NEW_HOSTNAME/" /etc/hosts
+
 shutdown -r now
 

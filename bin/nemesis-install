@@ -84,6 +84,7 @@ echo "installing node..." && {
 	echo "done." 
 	cd /srv/nemesis/
 	npm install base64
+	npm install ecc
 }
 [ "$(getYesNo 'Configure networking?')" != "Y" ] && {
 	echo " "

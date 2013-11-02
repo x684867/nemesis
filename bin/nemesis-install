@@ -41,7 +41,7 @@ echo "installing software packages" && {
 	service rsyslog restart && \
 	for SERVER_TYPE in audit broker cipherstore keystore; do
 		ln -sf /srv/nemesis/etc/init/${SERVER_TYPE} /etc/init/${SERVER_TYPE} && \
-		ln -sf /srv/nemesis/etc/init.d/nemesis-${SERVER_TYPE} /etc/init.d/nemesis-${SERVER_TYPE} && \
+		ln -sf /srv/nemesis/etc/init.d/nemesis-${SERVER_TYPE} /etc/init.d/nemesis-${SERVER_TYPE} 
 	done && \
 	mkdir -p /var/run/nemesis/${SERVER_TYPE} && \
 	mkdir -p /var/log/nemesis/{audit,broker,cipher,keys} && \

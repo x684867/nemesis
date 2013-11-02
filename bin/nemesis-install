@@ -23,6 +23,8 @@ export TIME_SERVER="0.pool.ntp.org"
 	echo " "
 	exit 1
 }
+SERVER_TYPE="$1"
+
 
 [ "$(grep DISTRIB_ID /etc/lsb-release | awk -F \= '{print $2}')" != "Ubuntu" ] && {
 	echo "This script will only work with Ubuntu."

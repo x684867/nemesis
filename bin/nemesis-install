@@ -74,29 +74,36 @@ echo "installing node..." && {
 	echo " "
 	exit 0
 }
-echo " "
-[ "$(getYesNo 'Set a static IP address?')" != "Y" ] && {
-		echo "Configuring for DHCP"
-		create_default_config
-		echo "restarting network"
-		restart_networking
-		exit 0
-}
-echo " " 
-ADDRESS="$(getIP 'Enter IP Address')"
-echo " "
-NETMASK="$(getMask 'Enter Subnet Mask')"
-echo " "
-GATEWAY="$(getIP 'Enter Gateway')"
-echo " "
-DNS="$(getIP 'Enter DNS IP')"
-echo " "
+APPROVED="N"
+while[ "$APPROVED" != "Y" ]; do
+	echo " "
+	[ "$(getYesNo 'Set a static IP address?')" != "Y" ] && {
+			echo "Configuring for DHCP"
+			create_default_config
+			echo "restarting network"
+			restart_networking
+			exit 0
+	}
+	echo " " 
+	ADDRESS="$(getIP 'Enter IP Address')"
+	echo " "
+	NETMASK="$(getMask 'Enter Subnet Mask')"
+	echo " "
+	GATEWAY="$(getIP 'Enter Gateway')"
+	echo " "
+	DNS="$(getIP 'Enter DNS IP')"
+	echo " "
+	if [ "$(getYesNo 'Are these settings correct?')" == "Y" ]; then
+		echo "Applying settings"
+		APPROVED="Y"
+	else
+		echo " "
+		echo "Not applying the changes"
+		echo " "
+		APPROVED="N"
+	fi
+done
 
-[ "$(getYesNo 'Are these settings correct?')" != "Y" ] && {
-	echo " "
-	echo "Not applying the changes"
-	echo " "
-}
 echo "Setting the following parameters:"
 echo "    proto:   static"
 echo "    address: $ADDRESS"
@@ -127,4 +134,5 @@ echo "Restarting network..."
 /etc/init.d/networking restart &> /dev/null
 [ "$?" != "0" ] && echo "Network failed to restart" && exit 1
 echo "...Network restarted"
+shutdown -r now
 

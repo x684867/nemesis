@@ -19,9 +19,9 @@
 		"types",		/*standard types and type checking*/
 		"error",		/*error handling*/
 		"process",		/*process management extensions*/
-		"store",		/*data store client*/
-		"marco",		/*data store replicator source*/
-		"polo",			/*data store replicator target*/
+		"store",		/*data store core services*/
+		"marco",		/*data store replicator sender*/
+		"polo",			/*data store replicator receiver*/
 		"stats",		/*statistics collector*/
 		"watchdog"		/*application monitor / manager*/
 	],

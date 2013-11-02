@@ -3,5 +3,10 @@
 		"code":"number",
 		"type":"string",
 		"text":"string"
+	},
+	"fileReadError":{
+		"code":"number",
+		"type":"string",
+		"text":"string"
 	}
 }

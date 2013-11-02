@@ -17,66 +17,42 @@
 module.exports=function(){
 	/*
 		The store object abstracts away the mongo database.
-	*/
-	var mongoose=require('mongoose');
-	
-	connect=function(server_type){
-		mongoose.connect(
-							config.stores[config.server_type].protocol+"://"+
-							config.stores[config.server_type].ip+":"+
-							config.stores[config.server_type].port+"/"+
-							config.server_type
-		);
-	}
-	
-	read=function(objectName){
-	
-	}
-
-	write=function(objectName,objectData){
-	
-	
-	}
-
-
-
-
-
+	 */
 	if(typeof(config.server_type)=='undefined') error.raise(error.store.UndefinedServerType);
-
-	mongoose=require('mongoose');
-	mongoose.connect('mongodb://'+
-						config.stores[config.server_type].ip+":"+
-						config.stores[config.server_type].port+"/"+
-						config.server_type
-	);
 	
-
-	/*
-	var mongoose = require('mongoose');
-		mongoose.connect('mongodb://localhost/store');
-	*/
-	/*
-	var currStore = mongoose.model('Cat', { name: String });
-
-	var kitty = new Cat({ name: 'Zildjian' });
-	kitty.save(function (err) {
-	  if (err) // ...
-	  console.log('meow');
-	});
-	*/
-/*
-"stores":{
-		"audit":{
-			"server":"string",
-			"port":"number",
-			"user":"string",
-			"passwd":"string",
-			"tls":{
-				"key":"string",
-				"cert":"string",
-				"ca":"string"
+	initialize_store();
+	
+	root.store={};
+	root.store.marco=require('./marco/main.js');
+	root.store.polo=require('./polo/main.js');
+	root.store.read:function(objectId){
+			var fs=require('fs');
+			var buffer=undefined;
+			for(retry_count=0;i<=config.store.readTimeout; retry_count++){
+				fs.readFile(objectPath,function(err,encoded_data){
+					if(err){
+						switch(err.code){
+							case 'ENOENT':call_marco_advertise()
+							default:error.raise(error.store.fileReadError,err.toString());break;
+						}
+					}else{
+						buffer=require('base64').decode(encoded_data);
+						break;					
+					}
+				});
 			}
-		},
-*/
+		}
+		write:function(objectId,objectData){
+		}
+	}
+}
+
+function initialize_store(){
+	/*
+		Initialize the store-as-a-peer service.
+		This means connecting to each registered
+		peer and advertising the current host as
+		online and ready.
+	*/
+	
 }

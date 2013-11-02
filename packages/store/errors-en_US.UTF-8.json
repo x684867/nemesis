@@ -2,6 +2,11 @@
 	"UndefinedServerType":{
 		"code":101,
 		"type":"fatal",
-		"text":"server_type is undefined in store package initiator."
+		"text":"server_type is undefined.  This should have been provided by the bootstrap."
+	},
+	"fileReadError":{
+		"code":102,
+		"type":"warn",
+		"text":"store.read() encountered read error. "
 	}
 }

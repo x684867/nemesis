@@ -12,16 +12,4 @@ echo "script.  This script will install the build tools"
 echo "then call each of the build scripts."
 echo " "
 
-export BUILD_PATH=/srv/nemesis/src
-
-echo "Install development tools."
-apt-get install binutils -y && \
-apt-get install cpp cpp-4.7 -y && \
-apt-get install g++ g++-4.7 -y && \
-apt-get install gcc gcc-4.7 -y && \
-apt-get install fakeroot -y && \
-apt-get install libgcc-4.7-dev -y &&\
-apt-get install make -y && \
-${BUILD_PATH}/node-install && \
-echo "DONE.  SUCCESS."
 

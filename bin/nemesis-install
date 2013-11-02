@@ -1,0 +1,100 @@
+#!/bin/bash
+#
+# nemesis-install.sh
+# (c) 2013 Sam caldwell.  All Rights Reserved.
+#
+set -e
+export PATH=$PATH:/srv/nemesis/bin/
+
+export DEBUG=1
+[ $DEBUG -eq 1 ] && set -x
+
+init_profile(){
+	ln -sf /srv/nemesis/etc/vimrc /root/.vimrc
+	ln -sf /srv/nemesis/etc/nemesis.profile /etc/profile.d/nemesis.sh
+	. /etc/profile
+}
+
+base_install(){
+	#
+	#base installation
+	#
+	init_profile && \
+	ln -sf /srv/nemesis/bin/delay /usr/bin/delay && \
+	echo "Updating the clock..." && \
+	time ntpdate $TIME_SERVER && \
+	echo "installing software packages" && \
+	time apt-get install vim -y && \
+	time apt-get install openssh-server openssh-client -y && \
+	time apt-get install openssl -y && \
+	time apt-get install mongodb && \
+	time apt-get install nginx-full -y && \
+	time /srv/nemesis/src/build-nemesis && \
+	echo "software is now installed...configuring system." && \
+	rm -f /etc/nginx/sites-enabled/* && \
+	rm -rf /etc/nginx/sites-available && \
+	rm -rf /etc/rsyslog* && \
+	ln -sf /srv/nemesis/etc/nginx/sites-available /etc/nginx/sites-available && \
+	ln -sf /srv/nemesis/etc/nginx/sites-available/${SERVER_TYPE} /etc/nginx/sites-enabled/${SERVER_TYPE} && \
+	ln -sf /srv/nemesis/etc/init/${SERVER_TYPE} /etc/init/${SERVER_TYPE} && \
+	ln -sf /srv/nemesis/etc/init.d/nemesis-${SERVER_TYPE} /etc/init.d/nemesis-${SERVER_TYPE} && \
+	ln -sf /srv/nemesis/etc/rsyslog/rsyslog.conf /etc/rsyslog.conf && \
+	service rsyslog restart && \
+	mkdir -p /var/run/nemesis/${SERVER_TYPE} && \
+	mkdir -p /var/log/nemesis/{audit,broker,cipher,keys} && \
+	echo "Base installation complete for ${SERVER_TYPE}" && return 0
+	# Fall through if a failure occurs.
+	echo "base_install() failed for ${SERVER_TYPE}" && return 1
+}
+[ "$(whoami)" != "root" ] && echo "$0 must be run as root." && exit 1
+[ -z "$1" ] && echo "Missing argument." && exit 1
+[ ! -z "$2" ] && {
+	[ "$2" == "--rebuild" ] && {
+		echo "Rebuild software"
+		/srv/nemesis/src/build-nemesis
+	}
+}
+
+export SERVER_TYPE=$(echo "$1" | tr -dc a-z)
+export TIME_SERVER="0.pool.ntp.org"
+
+echo "Starting install ( $SERVER_TYPE )..."
+
+case "$SERVER_TYPE" in 
+	audit)
+		base_install $SERVER_TYPE
+		[ $? -ne 0 ] && echo "One or more errors occurred." && exit 1
+		create-ssl-certificates $SERVER_TYPE
+		configure-network
+		#add more steps here
+		exit 0
+	;;
+	cipher)
+		base_install $SERVER_TYPE
+		[ $? -ne 0 ] && echo "One or more errors occurred." && exit 1
+		create-ssl-certificates $SERVER_TYPE
+		configure-network
+		#add more steps here
+		exit 0
+	;;
+	broker)
+		base_install $SERVER_TYPE
+		[ $? -ne 0 ] && echo "One or more errors occurred." && exit 1
+		create-ssl-certificates $SERVER_TYPE
+		configure-network
+		#add more steps here
+		exit 0
+	;;
+	keys)
+		base_install $SERVER_TYPE
+		[ $? -ne 0 ] && echo "One or more errors occurred." && exit 1
+		create-ssl-certificates $SERVER_TYPE
+		configure-network
+		#add more steps here
+		exit 0
+	;;
+	*)
+		echo "USAGE: $0 [broker,cipher,keys]"
+		exit 1
+	;;
+esac

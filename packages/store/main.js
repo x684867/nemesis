@@ -3,8 +3,7 @@
 	/srv/nemesis/packages/store/
 	(c) 2013 Sam Caldwell.  All Rights Reserved.
 	
-	This package loads and extends the mongoose NPM package to provide an
-	abstract mongodb data store.
+	This package provides a peer-to-peer distributed key-value store.
 		
 	USE:
 		root.store
@@ -23,27 +22,36 @@ module.exports=function(){
 	initialize_store();
 	
 	root.store={};
+	
 	root.store.marco=require('./marco/main.js');
 	root.store.polo=require('./polo/main.js');
+	
 	root.store.read:function(objectId){
-			var fs=require('fs');
-			var buffer=undefined;
-			for(retry_count=0;i<=config.store.readTimeout; retry_count++){
-				fs.readFile(objectPath,function(err,encoded_data){
-					if(err){
-						switch(err.code){
-							case 'ENOENT':call_marco_advertise()
-							default:error.raise(error.store.fileReadError,err.toString());break;
-						}
-					}else{
-						buffer=require('base64').decode(encoded_data);
-						break;					
+		var fs=require('fs');
+		var buffer=undefined;
+		for(retry_count=0;i<=config.store.readTimeout; retry_count++){
+			fs.readFile(objectPath,function(err,encoded_data){
+				if(err){
+					switch(err.code){
+						case 'ENOENT':store.polo.advertise(objectId);
+						/*
+							Add more error handling
+						 */
+						default:error.raise(error.store.fileReadError,err.toString());break;
 					}
-				});
-			}
+				}else{
+					buffer=require('base64').decode(encoded_data);
+					break;					
+				}
+			});
 		}
-		write:function(objectId,objectData){
+		if(buffer===undefined){
+			error.raise(error.store.objectNotFound,objectId);
+		}else{
+			return buffer;
 		}
+	}
+	write:function(objectId,objectData){
 	}
 }
 

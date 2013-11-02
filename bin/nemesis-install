@@ -18,7 +18,6 @@ export TIME_SERVER="0.pool.ntp.org"
 }
 
 [ "$(whoami)" != "root" ] && echo "$0 must be run as root." && exit 1
-[ -z "$1" ] && echo "Missing argument." && exit 1
 [ ! -z "$2" ] && {
 	[ "$2" == "--rebuild" ] && {
 		echo "Rebuild software"

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 nemesis_server
 ==============
 
@@ -62,3 +63,9 @@ Nemesis servers (audit, broker, cipher, keys)
   to maintain synchronization between dev, qa, stage and
   prod environments over time--reducing the amount of 
   problems during the project lifetime.
+=======
+nemesis
+=======
+
+Nemesis Server 0.01
+>>>>>>> 448e1f2837e040eecf98fa6e10089f5912304e1a

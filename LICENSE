@@ -1,7 +1,11 @@
 GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
 
+<<<<<<< HEAD
  Copyright (C) 1989, 1991 Free Software Foundation, Inc.,
+=======
+ Copyright (C) 1989, 1991 Free Software Foundation, Inc., <http://fsf.org/>
+>>>>>>> 448e1f2837e040eecf98fa6e10089f5912304e1a
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
@@ -154,7 +158,11 @@ Sections 1 and 2 above provided that you also do one of the following:
 
 The source code for a work means the preferred form of the work for
 making modifications to it.  For an executable work, complete source
+<<<<<<< HEAD
 code means all the source code for all packages it contains, plus any
+=======
+code means all the source code for all modules it contains, plus any
+>>>>>>> 448e1f2837e040eecf98fa6e10089f5912304e1a
 associated interface definition files, plus the scripts used to
 control compilation and installation of the executable.  However, as a
 special exception, the source code distributed need not include
@@ -290,8 +298,13 @@ to attach them to the start of each source file to most effectively
 convey the exclusion of warranty; and each file should have at least
 the "copyright" line and a pointer to where the full notice is found.
 
+<<<<<<< HEAD
     Nemesis servers (audit, broker, cipher, keys)
     Copyright (C) 2013  sam caldwell
+=======
+    {description}
+    Copyright (C) {year}  {fullname}
+>>>>>>> 448e1f2837e040eecf98fa6e10089f5912304e1a
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -18,12 +18,6 @@ export TIME_SERVER="0.pool.ntp.org"
 }
 
 [ "$(whoami)" != "root" ] && echo "$0 must be run as root." && exit 1
-[ ! -z "$2" ] && {
-	[ "$2" == "--rebuild" ] && {
-		echo "Rebuild software"
-		/srv/nemesis/src/build-nemesis
-	}
-}
 
 ln -sf /srv/nemesis/etc/vimrc /root/.vimrc && \
 ln -sf /srv/nemesis/etc/nemesis.profile /etc/profile.d/nemesis.sh && \

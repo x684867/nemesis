@@ -20,8 +20,6 @@
 		"error",		/*error handling*/
 		"process",		/*process management extensions*/
 		"store",		/*data store core services*/
-		"marco",		/*data store replicator sender*/
-		"polo",			/*data store replicator receiver*/
 		"stats",		/*statistics collector*/
 		"watchdog"		/*application monitor / manager*/
 	],

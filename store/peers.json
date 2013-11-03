@@ -1,0 +1,8 @@
+/*This should be sorted by reliability with the most reliable peer at the top of the array.*/
+[
+	{"dns":"peer0.nemesiscloud.com","ip":"10.211.55.210","reliability":1000	},
+	{"dns":"peer1.nemesiscloud.com","ip":"10.211.55.211","reliability":235	},
+	{"dns":"peer2.nemesiscloud.com","ip":"10.211.55.212","reliability":505	},
+	{"dns":"peer3.nemesiscloud.com","ip":"10.211.55.213","reliability":1	},
+	{"dns":"peer4.nemesiscloud.com","ip":"10.211.55.214","reliability":999	}
+]

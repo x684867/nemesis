@@ -1,5 +1,7 @@
 {
-	/*
-		Not defined
-	*/
+	docRoot:"string",
+	read:{
+		"timeOut":"number"
+	}
+
 }

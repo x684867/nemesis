@@ -1,4 +1,46 @@
+/*
+	Nemesis Data Store Abstraction Layer Package
+	/srv/nemesis/packages/store/
+	(c) 2013 Sam Caldwell.  All Rights Reserved.
+	
+	This package provides a peer-to-peer distributed key-value store.
+		
+	USE:
+		root.store
+		
+	DOCUMENTATION:
+	
+		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-Store
+	
+*/
 {
-
-
+	"docRoot":"/srv/nemesis/store/data",
+	"peerList":"/srv/nemesis/store/peers.json",
+	"replication":{
+		"ttl":3,			/*Number of 'replication hops' an object can make before it stops replicating.*/
+		"width":2,			/*Number of peers to which a host will replicate a local change.
+		"concurrency":5		/*Maximum number of parallel marco.replicate() operations allowed.*/
+			/*
+				Theory of Operation:
+				
+					An object will be replicated from its source to a number (width) of peers, 
+					these peers will "echo" the replication to their peer list and so on for
+					some number of times (ttl).  This creates a replication tree of width nodes
+					multiplied by ttl depth to create a replication map of t*w area.
+					
+					The replication topology can then be optimized through a later (undeveloped)
+					strategy that will negotiate replication peerlists such that each peer will 
+					have a complete list, sorted in an order to ensure the greatest coverage
+					in the fewest operations.
+			 */
+	
+	},
+	read:{
+		"timeOut":10,			/*Number of retries before a timeout occurs.*/
+		"retryInterval":2000
+	},
+	write:{
+		"timeOut":10,	/*Number of file-write retries before disk is failed.*/
+		"retryInterval":1000
+	}
 }

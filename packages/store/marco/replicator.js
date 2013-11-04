@@ -25,39 +25,48 @@ var isRunning=false;
 var queueProcessMgmtInterval=1000;
 var statsReportingInterval=5000;
 
-
 var stats={
-			initCalls:0,
-			statRequests:0,
-			invalidIPCmessages:0,
-			processMgmtIntervalChanges:0,
-			statsReportingIntervalChanges:0,
-			queueProcessing:{
-				objectProcessStarted:0,
-				objectProcessCompleted:0,
-				alive:0,
-				notAlive:0,
-				stopping:0,
-				isStopping:0,
-				start:0,
-				startCompleted:0,
-				starting:0
-			},
-			queue:{
-				loads:0;
-				size:0,
-				sampleTime:(new Date).getTime()
-			}
-			/*
-				Implement a peerList stats tracking here.
-			 */
+		initCalls:0,
+		statRequests:0,
+		invalidIPCmessages:0,
+		processMgmtIntervalChanges:0,
+		statsReportingIntervalChanges:0,
+		queueProcessing:{
+			objectProcessStarted:0,
+			objectProcessCompleted:0,
+			alive:0,
+			notAlive:0,
+			stopping:0,
+			isStopping:0,
+			start:0,
+			startCompleted:0,
+			starting:0
+		},
+		queue:{
+			loads:0;
+			size:0,
+			hasNoObjects:0,
+			hasObjects:0,
+			sampleTime:(new Date).getTime()
+		},
+		peers:Array()	/*created when IPC 'init_process' loads peerList.*/
 };
 process.on('message',
 	function(message,handle){
 		switch(message.code){
 			case "init_process":
 				stats.initCalls++;
-				message.peerList.forEach(function(peer){peerList.push(peer);});
+				message.peerList.forEach(
+					function(peer,peerId){
+						peerList.push(peer);
+						stats.peers.push({
+							replicationStart:0,
+							replicationCompleted:0,
+							count:0,
+							totalTime:0
+						});
+					}
+				);
 				break;
 			case "load_object": 
 				stats.queue.loads++;
@@ -102,40 +111,35 @@ setInterval(function(){
 
 setInterval(function(){sendCurrentStats();},statsReportingInterval);
 
+function sendCurrentStats(){process.send({"code":"stats","data":stats});}
+
 function startQueueProcessing(){
-
 	stats.queueProcessing.start++;
-
 	if(isQueueProcessing){
 		console.log("QueueProcessing is alive");
 		stats.queueProcessing.alive++;
 	}else{
 		stats.queueProcessing.notAlive++;
-		if(isStopping){
-			stats.queueProcessing.isStopping++;
-			console.log("QueueProcessing cannot start.  It is stopping.");
-		}else{
+		if(isRunning){
 			stats.queueProcessing.starting++;
 			console.log("QueueProcessing is starting.");
 			qProcessingId=setInterval(function(){
 				isBusy=true;
 				stats.queueProcessing.objectProcessStarted++;
-				oStore=replicationQueue.pop();
-				/*
-					timer to process message queues.
-					process oStore...
-				*/
+				replicateTopObject();/*this will pop and replicate an object in queue.*/
 				isBusy=false;
 				stats.queueProcessing.objectProcessCompleted++;
-
 			},0);
 			isQueueProcessing=true;
 			console.log("QueueProcessing is stopped.");
-	
+		}else{
+			stats.queueProcessing.isStopping++;
+			console.log("QueueProcessing cannot start.  It is stopping.");
 		}
 	}
 	stats.queueProcessing.startCompleted++;
 }
+
 function stopProcessing(){
 	if(isQueueProcessing){
 		if(isBusy)
@@ -150,13 +154,26 @@ function stopProcessing(){
 	}else
 		console.log("QueueProcessing is dead.");
 }
-
-function sendCurrentStats(){
-	process.send( 
-					{
-						"code":"stats",
-						"data":stats
-					}
-	);
+function replicateTopObject(){
+	oStore=replicatorQueue.pop();
+	if(typeof(oStore)=='undefined'){
+		stats.queue.hasNoObjects++;
+	}else{
+		stats.queue.hasObjects++;
+		peerList.forEach(function(peer,peerId){
+			stats.peers[peerId].replicationStart++;
+			replicateObjectToPeer(peer,peerId,oStore);
+			stats.peers[peerId].replicationCompleted++;
+		});
+	}
 }
 
+function replicateObjectToPeer(peer,peerId,oStore){
+	var startTime=(new Date).getTime();
+	stats.peers[peerId].count++;
+	/*
+		use tls to call the peer and push data to it.
+		
+	 */
+	 stats.peers[peerId].totalTime+=((new Date).getTime() - startTime);
+}

@@ -23,7 +23,7 @@ require('./JSON-active.js')();
 require('./JSON-config.js')();
 /*
 	Validate the command-line inputs.
-*/
+ */
 var server_type=process.argv[2];
 if(typeof(server_type)!='string') throw new Error('Invalid server_type passed to boostrap.js');
 
@@ -33,17 +33,14 @@ if( (typeof(launch_mode)!='string') && (['master','worker'].indexof(launch_mode)
 
 console.log( Array(process.stdout.rows).join('\n')+Array(process.stdout.columns).join('=')+
              '\nStart ['+app.title+':v'+app.version+'] '+
-             server_type+':'+launch_mode+'('+process.pid+') '+ (new Date).toString()+'\n\n'
-);
+             server_type+':'+launch_mode+'('+process.pid+') '+ (new Date).toString()+'\n\n');
 /* 
 	Load application configuration data
-*/
+ */
 if(require('fs').lstatSync(app_conf).isFile()){
-	console.log('LOAD app_conf');
 	root.config=JSON.config.loadValidJSON(app_conf,app_conf_pattern);
 	root.config.server_type=server_type
 	if(typeof(config.debug)!='boolean') throw new Error('root.config.debug must be boolean');
-
 	if(config.debug){
 		console.log('\n-----------------Application Config-----------------');
 		console.dir(root.config);

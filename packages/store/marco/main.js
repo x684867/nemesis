@@ -16,58 +16,46 @@
 module.exports=function(){
 	
 	var objectQueue=Array(); /*Queue of objects pending replication*/
-	var concurrency=0;			 /*Number of instances of replicate() method currently executing*/
+	var peerList=JSON.commented.load(config.store.peerList);
+	var replicator=undefined;
+
+	push=function(oStore){
 	
-	register=function(){
-	
-	}
-	startReplicator=function(){
-	
-	}
-	
-	push=function(objectId,oStore){
-	
-	}
-	replicate=function(){
-		if(concurrency >= store.marco.maxConcurrency){
-			/*pause timer*/
+		if(store.debug) console.log(messages.store.pushingToQueue+"("+oStore.id+") ");
+		
+		if(replicator==undefined){
+		
+			console.log("\tSpawn replicator...");
+			replicator=require('child_process').fork('./replicator.js');
+			console.log("\tReplicator spawned.");
+			
+		}else{
+		
+			console.log("\tReplicator exists.");
 		}
-		rCount++;
-		var curr=objectQueue.pop();
-		if(curr!=undefined){
-			store.peerList.forEach(function(peer,i,a){
-				/*send message*/
-			});
-		}
-		if(concurrency < store.marco.maxConcurrency){
-			/*resume timer*/
-		}
-		rCount--;
+		
+		console.log("\tDispatching oStore to replicator: "+oStore.id);
+		replicator.send(oStore); 
 	}
-	/*
-		Start the timer-based queue
-		processor to replicate data
-		objects to remote hosts.
-	*/
+	advertise(objectId){
 	
+		if(store.debug) console.log("advertise() starting.");
+		
+		if(advertiser==undefined){
+		
+			console.log("\tAdvertiser spawning...");
+			advertiser=require('child_process').fork('./advertiser.js');
+			console.log("\tAdvertiser spawned.");
+			
+		}else{
+		
+			console.log("\tAdvertiser exists.");
+		}
+		
+		console.log("\tDispatching job to advertiser: "+objectId);
+		advertiser.send(objectId);
+	}
 }
 
 
 
-function generateSignature(o){
-	/*
-		Generate a signature that cannot be replayed.
-	 	To do this we hash the id, data and time using
-	 	a sha512 algorithm.  This hash will be encrypted
-	 	using the sender's private key.  Recipients can then
-	 	decrypt the hash with the sender's public key to validate
-	 	the package.
-	 	
-	 	TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384
-	 	
-	 	
-	 */
-	return crypto.createHash('sha512WithRSAEncryption')
-				 .update(o.id+o.hash+o.time+o.data)
-				 .digest('hex');		
-}

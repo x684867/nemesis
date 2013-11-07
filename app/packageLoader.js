@@ -6,48 +6,43 @@
 		This file exports an object used to load the packages defined in 
 		root.config.packages (defined by bootstrap.js).
  */
-module.exports=function( mFile , server_name ){
+module.exports=function( mFile , application, launch_mode ){
 	var pFile=mFile.replace( /json/ , 'pattern.json' );
 	
 	var fs=require('fs');
 	
-	root.package={};
-	
-	if(typeof(root.config.debug)!='boolean') throw new Error('root.config.debug must be boolean');
 	if(root.config.debug) console.log('PackageLoader is starting....');
-	
-	/*Load the JSON manifest file.*/
 	if(root.config.debug) console.log("\tVerifying manifest before loading:" +mFile );
-	if(!fs.lstatSync(mFile).isFile()) throw('\t\tmanifest file not found [' + mFile + '].' );
-	if(!fs.lstatSync(pFile).isFile()) throw('\t\tmanifest pattern file not found [' + mFile + '].' );
-	
 	var manifest=JSON.config.loadValidJSON( mFile , pFile );
-	
+		
 	if(root.config.debug) console.log(
 			"\t\tloading...\n"+Array(process.stdout.columns).join('-')+'\n'+
 			"\t\tmanifest:("+typeof(manifest)+")\n\t\t\t{"+Object.keys(manifest).join(',')+"}\n"+
 			Array(process.stdout.columns).join('=')+'\n'
 	);
 	
-	/*Make sure the mode has an associated serverPackage.*/
-	if(manifest.serverPackages.indexOf(server_name)==-1) throw new Error("ERROR! Bad launch: "+server_name);
-	
-	if(typeof(manifest.package_dir)!='string') throw new Error('package_dir not a string');
-
-	if(root.config.debug) console.log('manifest.package_dir['+manifest.package_dir+']:valid string');
-
-	var pDir=manifest.package_dir;
-
-	if(!fs.lstatSync(manifest.package_dir).isDirectory()) throw new Error("pDir doesn't exist!");
-					
-	/*Load the application framework (core) packages*/
-	manifest.corePackages.forEach(function(pkgName){load(manifest.package_dir,pkgName);});
-			
-	/*Load the server package.*/
-	load(manifest.package_dir,server_name);
-			
-	/*Load the appPackages*/
-	manifest.appPackages.forEach(function(pkgName){load(manifest.package_dir,pkgName);});
+	/*Make sure the mode has an associated application.*/
+	if(manifest.serverPackages.indexOf(application)==-1) 
+		throw new Error("ERROR! Bad application: "+application);
+	if(['master','worker'].indexOf(launch_mode)==-1) 
+		throw new Error("ERROR! Bad launch_mode: "+launch_mode);
+	if(typeof(manifest.package_dir)!='string') 
+		throw new Error('package_dir not a string');
+	if(root.config.debug) 
+		console.log('manifest.package_dir['+manifest.package_dir+']:valid string');
+	if(!fs.lstatSync(manifest.package_dir).isDirectory()) 
+		throw new Error("manifest.package_dir doesn't exist!");
+		
+	manifest.main[launch_mode].forEach(
+		function(listName){
+			/*Load the application framework (core) packages*/
+			manifest[listName].forEach(
+				function(pkgName){
+					load(manifest.package_dir,pkgName);
+				}
+			);
+		}
+	);
 }
 
 function load(pkgDir,pName){

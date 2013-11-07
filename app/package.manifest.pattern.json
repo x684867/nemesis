@@ -1,6 +1,11 @@
 {
 	"package_dir":"string",
+	"main":{
+		"master":"Array('string')",
+		"worker":"Array('string')"
+	},
 	"corePackages":"Array('string')",
-	"serverPackages":"Array('string')",
-	"appPackages":"Array('string')"
+	"masterCorePackages":"Array('string')",
+	"workerCorePackages":"Array('string')",
+	"applicationPackages":"Array('string')"
 }

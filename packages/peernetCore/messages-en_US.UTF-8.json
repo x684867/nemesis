@@ -1,19 +1,17 @@
 /*
-	Nemesis Global Logger Management Package
-	/srv/nemesis/packages/logger/
+	Nemesis Global PeerNet Management Package
+	/srv/nemesis/packages/peernetCore/
 	(c) 2013 Sam Caldwell.  All Rights Reserved.
 	
-	This package creates a global logger management package for writing output through
-	console.log() to the terminal.  The logger object extends the functionality of the
-	console object by adding a process.on('resize') event, line-drawing methods and other
-	pretty output features.
+	This package creates a robust peer-to-peer network for secure (TLS) connections
+	between an arbitrary number of peers.
 		
 	USE:
-		root.logger
+		root.peernetCore
 		
 	DOCUMENTATION:
 	
-		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-Logger
+		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-PeerNetCore
 	
 */
 { }

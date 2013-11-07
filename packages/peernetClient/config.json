@@ -1,5 +1,5 @@
 /*
-	Nemesis Global PeerNet Management Package
+	Nemesis Global PeerNet Client Package
 	/srv/nemesis/packages/peernet/
 	(c) 2013 Sam Caldwell.  All Rights Reserved.
 	
@@ -7,15 +7,13 @@
 	between an arbitrary number of peers.
 		
 	USE:
-		root.peernet
+		root.peernetClient
 		
 	DOCUMENTATION:
 	
-		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-PeerNet
+		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-PeerNetClient
 	
 */
 {
 	"debug":true,
-	"peerList":"/srv/nemesis/store/peerNet/peers.json",
-	"keyFile":"/srv/nemesis/store/peerNet/security.json",/*Run-time dynamic security parameters.*/
 }

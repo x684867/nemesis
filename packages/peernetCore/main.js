@@ -1,18 +1,17 @@
 /*
-	Nemesis Global Console/Log Management Package
-	/srv/nemesis/packages/logger/
+	Nemesis Global PeerNet Management Package
+	/srv/nemesis/packages/peernetCore/
 	(c) 2013 Sam Caldwell.  All Rights Reserved.
 	
-	This package overloads the console object [e.g. console.log() and console.error()]
-	to add functionality.
+	This package creates a robust peer-to-peer network for secure (TLS) connections
+	between an arbitrary number of peers.
 		
 	USE:
-	
-		console
+		root.peernetCore
 		
 	DOCUMENTATION:
 	
-		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-Logger
+		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-PeerNetCore
 	
 */
 module.exports=function(src,options){

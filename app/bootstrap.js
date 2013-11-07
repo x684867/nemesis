@@ -48,15 +48,56 @@ if(require('fs').lstatSync(app_conf).isFile()){
 	Load all packages in the manifest.
 */
 root.packages={};
-root.packages.loader=require(config.packageLoader)(config.packageManifest,server_type);
+root.packages.loader=require(config.packageLoader)(
+														config.packageManifest,
+														server_type,
+														launch_mode
+					);
 /*
+	-----------------------------------------------------------------------------------
 	Define the application
+	-----------------------------------------------------------------------------------
 */
-if(config.debug) console.log("Define the application core (root.app)");
-root.app.main=root.packages.main.init();
-root.app.start=root.packages.start.init();
-root.app.monitor={};
-root.app.monitor.watchdog=root.packages.watchdog.init();
-root.app.monitor.stats=root.packages.stats.init();
 /*Initialize then launch the application with the specified service (using arg[2])*/
 root.app.main(server_type,launch_mode);
+
+
+function main(application,launchMode){
+	/*
+		Load the appropriate service configuration file.
+	*/
+	switch(application){
+		case "audit": 	root.config.service=require(root.config.svc_cfg.audit);break;
+		case "broker":	root.config.service=require(root.config.svc_cfg.broker);break;
+		case "cipher":	root.config.service=require(root.config.svc_cfg.cipher);break;
+		case "key":		root.config.service=require(root.config.svc_cfg.key);break;
+		default: 
+			root.error.throw(root.error.messages.bootstrap.invalidArgument);
+			break;
+	}
+	/*
+		Show the application banner	
+	*/
+	root.app.log.screenBanner(root.message.app.starting);
+	/*
+		Initialize the process manager
+	*/
+	root.process=require(root.config.packages.app.process);
+	root.process.init();
+	/*
+		Launch the application
+	*/	
+	if(root.app.start()){
+		if(root.app.monitor.heartbeat.start()){
+			if(root.app.monitor.statistics.start()){
+				root.app.log.error(root.error.app.main.success);
+			}else{
+				root.app.log.error(root.error.app.main.monitorStatisticsFailed);
+			}
+		}else{
+			root.app.log.error(root.error.app.main.monitorHeartbeatFailed);
+		}
+	}else{
+		root.app.log.error(root.error.app.main.servicesFailed);
+	}
+}

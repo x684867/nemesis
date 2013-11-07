@@ -5,14 +5,27 @@
 */
 {
 	/*
-		The Package Directory is the directory where all packages are located.  This directory contains a single 
-		subdirectory for each package.  For example, the "types" package would consist of a subdirectory named
-		/srv/nemesis/packages/types/ which would contain all of the files making up the package.
+		The Package Directory is the directory where all packages are located.  This 
+		directory contains a single subdirectory for each package.  For example, the 
+		"types" package would consist of a subdirectory named /srv/nemesis/packages/types/
+		which would contain all of the files making up the package.
 	*/
 	"package_dir":"./packages",
+	
+	"main":{
+		"master":[
+				"corePackages",
+				"masterCorePackages",
+		],
+		worker:[
+				"corePackages",
+				"workerCorePackages",
+				"applicationPackages"
+		]
+	}
 	/*
-		Core Packages are packages shared by all of the serverPackages.  They are listed in the order in which
-		they must be loaded to satisfy dependency chains.
+		Core Packages are packages shared by all of the serverPackages.  They are listed 
+		in the order in which they must be loaded to satisfy dependency chains.
 	*/	
 	"corePackages":[
 		"logger",		/*logger and console functionality*/
@@ -26,37 +39,29 @@
 		host-application instance, while one or more lighter worker instances are needed
 		for the application to run.
 	*/
-	"master":[
+	"masterCorePackages":[
 		"peerNetCore",		/*provide a core peer-to-peer network package.*/
 		"storeServer",		/*data store core services*/
 		"statsCollector",	/*statistics collector*/
 		"watchdogProcess"	/*application monitor & manager*/
 	],
-	"worker":[
+	"workerCorePackages":[
 		"peerNetClient",	/*peerNet integration for workers.*/
 		"storeClient",		/*objectStore integration for workers.*/
 		"statsAgent",		/*Statistics Agent for integration with collector.*/
 		"watchdogListener",	/*Watchdog IPC Listener & Message Handler for Workers.*/
-		"workerCore"		/*Top-Level Integration of worker packages into unified framework.*/
+		"workerCore",		/*Top-Level Integration of worker packages into unified framework.*/
+		"webCore",			/*Top-Level web-abstraction*/
 	],
 	/*
-		The application layer packages are the subset of packages which form the service-providing
-		functionality of the system.  This is the payload application for which the rest of the 
-		framework exists.
+		The application layer packages are the subset of packages which form the service-
+		providing functionality of the system.  This is the payload application for which the 
+		rest of the framework exists.
 	*/
 	"applicationPackages":[
 		"audit",
 		"broker",
 		"cipherStore",
 		"keyStore"
-	],
-	/*
-		The bootstrap.js file builds an application (root.app) object which will be initialized by a main()
-		method and launched with a start() method.  These methods are defined in two "appPackages" in this
-		next section.
-	*/
-	"appPackages":[
-		"main",
-		"start"
 	]
 }

@@ -1,0 +1,7 @@
+{
+	docRoot:"string",
+	read:{
+		"timeOut":"number"
+	}
+
+}

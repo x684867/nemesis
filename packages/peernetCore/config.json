@@ -1,0 +1,21 @@
+/*
+	Nemesis Global PeerNet Management Package
+	/srv/nemesis/packages/peernet/
+	(c) 2013 Sam Caldwell.  All Rights Reserved.
+	
+	This package creates a robust peer-to-peer network for secure (TLS) connections
+	between an arbitrary number of peers.
+		
+	USE:
+		root.peernet
+		
+	DOCUMENTATION:
+	
+		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-PeerNet
+	
+*/
+{
+	"debug":true,
+	"peerList":"/srv/nemesis/store/peerNet/peers.json",
+	"keyFile":"/srv/nemesis/store/peerNet/security.json",/*Run-time dynamic security parameters.*/
+}

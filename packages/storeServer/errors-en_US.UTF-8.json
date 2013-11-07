@@ -1,0 +1,42 @@
+/*
+	Nemesis Data Store Abstraction Layer Package
+	/srv/nemesis/packages/store/
+	(c) 2013 Sam Caldwell.  All Rights Reserved.
+	
+	This package provides a peer-to-peer distributed key-value store.
+		
+	USE:
+		root.store
+		
+	DOCUMENTATION:
+	
+		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-Store
+	
+*/
+{
+	"UndefinedServerType":{
+		"code":101,
+		"type":"fatal",
+		"text":"server_type is undefined.  This should have been provided by the bootstrap."
+	},
+	"fileReadError":{
+		"code":102,
+		"type":"warn",
+		"text":"store.read() encountered read error. "
+	},
+	"objectNotOnHost":{
+		"code":103,
+		"type":"warn",
+		"text":"store.read() file requested is not on host.  Polo will advertise."
+	},
+	"objectNotFound":{
+		"code":104,
+		"type":"warn",
+		"text":"store.read() file requested but not found by marco-polo before timeout."
+	}
+	"fileWriteError":{
+		"code":105,
+		"type":"fatal",
+		"text":"store.write() encountered an unresolved. file write error."
+	}
+}

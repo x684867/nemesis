@@ -1,0 +1,22 @@
+{
+	"UndefinedServerType":{
+		"code":"number",
+		"type":"string",
+		"text":"string"
+	},
+	"fileReadError":{
+		"code":"number",
+		"type":"string",
+		"text":"string"
+	},
+	"objectNotOnHost":{
+		"code":"number",
+		"type":"string",
+		"text":"string"
+	},
+	"objectNotFound":{
+		"code":"number",
+		"type":"string",
+		"text":"string"
+	}
+}

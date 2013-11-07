@@ -1,0 +1,18 @@
+/*
+	Nemesis Data Store Abstraction Layer Package
+	/srv/nemesis/packages/store/
+	(c) 2013 Sam Caldwell.  All Rights Reserved.
+	
+	This package provides a peer-to-peer distributed key-value store.
+		
+	USE:
+		root.store
+		
+	DOCUMENTATION:
+	
+		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-Store
+	
+*/
+{
+	"pushingToQueue":"pushing object to replicationQueue: "
+}

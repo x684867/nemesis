@@ -173,7 +173,14 @@ function replicateObjectToPeer(peer,peerId,oStore){
 	stats.peers[peerId].count++;
 	/*
 		use tls to call the peer and push data to it.
+		stopping work to build a generic tls socket
+		package for peer-to-peer communication.
 		
+	 */
+	 throw new Error('replicateObjectToPeer not finished');
+	 /*
+	 
+	 
 	 */
 	 stats.peers[peerId].totalTime+=((new Date).getTime() - startTime);
 }

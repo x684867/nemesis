@@ -19,3 +19,35 @@ Server Setup Instructions:
 9. Execute the installer script:
 
 /srv/nemesis/bin/nemesis-install <broker,cipher,keys,audit>
+
+
+------------------------------------------------
+Creating TLS Peer Relationships Using OpenSSL
+------------------------------------------------
+
+Theory:
+	1. Each peer relationship is a two-way street
+	   Both peers are client AND server.
+	   
+	2. This means that each must have a private key
+	   and a public key signed by the other peer.
+	   
+	3. Rather than a central CA, Nemesis uses peer-
+	   based certificates so that a single host is
+	   NOT the CA and therefore cannot compromise
+	   the entire system.
+
+
+1. Create the CA Key:
+	
+	openssl ecparam -out /srv/nemesis/etc/tls/ca/store.ca.key
+
+2. Create and sign the CSR for the CA key:
+
+	openssl req -new -x509 -days 365 \
+		-key /srv/nemesis/etc/tls/ca/store.ca.key \
+		-out /srv/nemesis/etc/tls/ca/store.ca.crt
+
+3. Create the client certificate pair:
+
+	openssl 

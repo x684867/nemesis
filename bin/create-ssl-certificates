@@ -27,6 +27,9 @@ case "$1" in
 	keys)
 		SERVER_TYPE="$1"
 	;;
+	store)
+		SERVER_TYPE="$1"
+	;;
 	*)
 		echo "Unrecognized SERVER_TYPE.  Use -h or --help for assistance."
 		exit 1

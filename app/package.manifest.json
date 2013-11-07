@@ -19,15 +19,32 @@
 		"types",		/*standard types and type checking*/
 		"error",		/*error handling*/
 		"process",		/*process management extensions*/
-		"store",		/*data store core services*/
-		"stats",		/*statistics collector*/
-		"watchdog"		/*application monitor / manager*/
 	],
 	/*
-		The serverPackages are what this entire framework is built for.  They must be loaded in the second
-		stage after the corePackages and before the appPackages.
+		Depending on launch_mode, one of the two following package sets will be loaded.
+		The first (master) is the heavier of the two and should be loaded only once per
+		host-application instance, while one or more lighter worker instances are needed
+		for the application to run.
 	*/
-	"serverPackages":[
+	"master":[
+		"peerNetCore",		/*provide a core peer-to-peer network package.*/
+		"storeServer",		/*data store core services*/
+		"statsCollector",	/*statistics collector*/
+		"watchdogProcess"	/*application monitor & manager*/
+	],
+	"worker":[
+		"peerNetClient",	/*peerNet integration for workers.*/
+		"storeClient",		/*objectStore integration for workers.*/
+		"statsAgent",		/*Statistics Agent for integration with collector.*/
+		"watchdogListener",	/*Watchdog IPC Listener & Message Handler for Workers.*/
+		"workerCore"		/*Top-Level Integration of worker packages into unified framework.*/
+	],
+	/*
+		The application layer packages are the subset of packages which form the service-providing
+		functionality of the system.  This is the payload application for which the rest of the 
+		framework exists.
+	*/
+	"applicationPackages":[
 		"audit",
 		"broker",
 		"cipherStore",

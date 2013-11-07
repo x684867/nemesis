@@ -1,0 +1,4 @@
+{
+	"caKeyExpires":3504,	/*Random interval until CA private key expires*/
+	"caCertExpires":79,		/*Random interval AFTER CA private key expires when the CA Cert will expire*/
+}	

@@ -47,6 +47,10 @@ module.exports=function(){
 		"failure":"fatal",
 		"notfound":-1,
 		
+		/*Time Functions*/
+		now:function(){	return (new Date).getTime(); },
+		
+		/*Type-Checking*/
 		isArray:function(o){	return root.type.isObject(o) && root.type.isFunction(0);},
 		isBoolean:function(o){	return (typeof(o)=='boolean')?true:false;				},
 		isFunction:function(o){	return (typeof(o)=='function')?true:false;				},

@@ -1,0 +1,7 @@
+{
+	ca:{
+		created:"number",
+		key:"string",
+		cert:"string"
+	}
+}

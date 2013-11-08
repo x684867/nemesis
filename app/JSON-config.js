@@ -90,8 +90,9 @@ module.exports=function(){
 		of times on failure.		
 */
 function writeJSONfile(fname,jsonObject,retry){
-	jsonString=JSON.stringify(jsonObject)
-	require('fs').writeFile(fname,jsonObject,function(err){
+	setImmediate(function(){
+		if(typeof(jsonString)=='undefined') jsonString=JSON.stringify(jsonObject)
+		require('fs').writeFile(fname,jsonObject,function(err){
 		if(err){
 	 		if(retry>0){
 	 			console.log("Retry json config write ("+fname+"):"+jsonString);

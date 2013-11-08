@@ -5,4 +5,7 @@
 	"peerList":"string",
 	"peerListPatternFile":"string",
 	"keyFile":"string",
+	"securityFile":"string",
+	"securityPatternFile":"string"
+
 }

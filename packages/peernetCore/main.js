@@ -21,6 +21,10 @@ module.exports=function(src,options){
 				    may have been leftover from the last runtime.
 		  ----------------------------------------------------------------- ]
 	var peerList=loadPeerList();
+	var security=JSON.config.loadValidJSON(
+											config.peerNetCore.securityFile,
+											config.peerNetCore.securityPatternFile
+				);
 	/*
 	
 		All setup work must precede timer initialization.
@@ -42,7 +46,9 @@ module.exports=function(src,options){
 function refreshPeerList(peerList){
 	console.log("Persisting peer list to disk.");
 	peerList.forEach(function(peer,peerId){
-		JSON.config.write(peer.address+".json",peer);
+		process.nextTick(function(){
+			JSON.config.write(peer.address+".json",peer);
+		})
 	});
 }
 
@@ -51,14 +57,18 @@ function loadPeerList(){
 	if(!types.isArray(peerList)) error.raise(error.peerNetCore.invalidPeerList)
 	return peerList;
 }
-function peerListRekey(peerList){peerList.forEach(function(peer,peerId){peerRekey(peer,peerList);});}
-
-function peerRekey(peer,peerList){
-	/*
-		Perform a peer Rekey for peer to all peerList connections.
-	 */
-	 var key=generateKey();
-	 var c
-	 
-	 
+function peerListRekey(peerList){
+	peerList.forEach(function(peer,peerId){
+		process.nextTick(function(){
+			var ca=peer.local.ca;	/*Local certificate authority*/
+			var key=generateKey();
+			var cert=generateCertificate(key,ca);
+		})
+	});
+}
+function generateKey(){
+	/*generate private key*/
+}
+function generateCertificate(key,ca){
+	/*generate a CSR for key and sign with ca.key
 }

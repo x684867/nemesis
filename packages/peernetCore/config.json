@@ -18,7 +18,9 @@
 	"debug":true,
 	"peerConfigRefreshInterval":71,	/*Seconds (prime) to persistent refresh.*/
 	"peerConfigRekeyInterval":3619, /*Seconds (prime) to rekey.*/
-	"peerList":"/srv/nemesis/store/peerNet/peers/",
-	"peerListPatternFile":"/srv/nemesis/store/peerNet/peers.pattern.json",
-	"keyFile":"/srv/nemesis/store/peerNet/security.json",/*Run-time dynamic security parameters.*/
+	"peerList":"/srv/nemesis/data/peerNet/peers/",
+	"peerListPatternFile":"/srv/nemesis/data/peerNet/peers.pattern.json",
+
+	"securityFile":"/srv/nemesis/data/peerNet/security.json",
+	"securityPatternFile":"/srv/nemesis/data/peerNet/security.pattern.json"
 }

@@ -1,0 +1,26 @@
+/*
+	Global Security Config
+	(c) 2013 Sam Caldwell.  All Rights Reserved
+	
+	This file provides global, dynamic security parameters for the peerNet.
+	Content for this file will be overwritten at run-time when the system
+	re-keys its local certificate authority (CA).
+ */
+[
+	{
+		/*current ca*/
+		"created":0, /*timestamp*/
+		"expires":0, /*timestamp*/
+		"certsSigned":0,
+		"key":"pem-encoded.key.string",
+		"cert":"pem-encoded.cert.string",
+	},
+	{
+		/*next ca...the rekey in process.*/
+		"created":0, /*timestamp*/
+		"expires":0, /*timestamp*/
+		"certsSigned":0,
+		"key":"pem-encoded.key.string",
+		"cert":"pem-encoded.cert.string",
+	},
+]

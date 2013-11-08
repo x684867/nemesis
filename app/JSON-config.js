@@ -20,7 +20,6 @@
  */
 
 module.exports=function(){
-
 	require('./JSON-commented.js')();
 	
  	JSON.showWarnings=false;
@@ -35,6 +34,10 @@ module.exports=function(){
 	 			The two are decayed down into string "signatures" which are then compared
 	 			to ensure the configuration file complies with the expected syntactical pattern.
 	 	 */
+	 	JSON.config.write(fname,jsonObject){
+	 		const jsonWriteRetry=3;
+	 		writeJSONfile(fname,jsonObject,jsonWriteRetry);
+	 	}
 	 	JSON.config.loadValidJSON=function(oname,pname){
 	 	
 			p=JSON.commented.load(pname);/*Pattern File*/
@@ -75,6 +78,29 @@ module.exports=function(){
 		
 	}else if((typeof(JSON.showWarnings)=='boolean') && JSON.showWarnings)
 		console.log('     JSON.config was already defined.  Not reloading.');
+}
+/*
+	writeJSONfile(fname,jsonObject,retry):
+	
+		fname		: string filename
+		jsonObject	: JSON object (content)
+		retry		: number.  Retry if > 0.
+
+		This function will write a JSON file to disk, retrying up to a specified number
+		of times on failure.		
+*/
+function writeJSONfile(fname,jsonObject,retry){
+	jsonString=JSON.stringify(jsonObject)
+	require('fs').writeFile(fname,jsonObject,function(err){
+		if(err){
+	 		if(retry>0){
+	 			console.log("Retry json config write ("+fname+"):"+jsonString);
+	 			writeJSONfile(fname,jsonObject,retry-1);
+	 		}else
+	 			console.log("Failed json config write ("+fname+"):"+jsonString);
+	 	}else
+	 		console.log("Successful json config write ("+fname+"):");
+	});
 }
 /*
 	decay(o):

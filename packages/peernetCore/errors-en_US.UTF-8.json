@@ -14,4 +14,10 @@
 		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-PeerNetCore
 	
 */
-{ }
+{ 
+	"invalidPeerList":{
+		"code":101,
+		"type":"fatal",
+		"text":"An Invalid or empty peerList was loaded"
+	}
+}

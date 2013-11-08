@@ -1,0 +1,30 @@
+/*
+	Nemesis peerNet Peer Host Configuration
+	(c) 2013 Sam Caldwell.  All Rights Reserved.
+	
+	USAGE:
+		In order to prime the system during startup, this file must be
+		populated with certificates and other information used to establish
+		certificates.
+ */
+{
+	"address":"peer0.cluster.nemesiscloud.net",
+	"reputation":{
+		"firstOnline":0,	/*timestamp when first joined.*/
+		"lastOnline":0,		/*timestamp when last seen*/
+	},
+	"crypto":{
+		"local":{
+			"ca":{
+				"key":"pem-string",
+				"cert":"pem-string",
+			},
+			"key":"pem-string",
+			"cert":"pem-string"
+		},
+		"remote":{
+			"ca":"pem-string",
+			"cert":"pem-string"
+		}
+	}
+}

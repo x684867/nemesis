@@ -15,63 +15,60 @@
 	
 */
 module.exports=function(src,options){
-	console.now=function(){
-		var d=new Date;
-		return d.getFullYear()+'/'+d.getMonth()+'/'+d.getDate()+'@'
-			  +d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-	};
-	console.source=(typeof(src)=='undefined')?process.title:src;
-
-	console.init=function(localConsole,src,options){	
-		if(config.logger.syslog.enabled){
-			localConsole.syslog=new syslogClient(options); /*Undefined by default*/
-		}
-		localConsole.stdout=localConsole.log;
-		localConsole.stderr=localConsole.error;
-		localConsole.stdlog=localConsole.syslog;	
-		localConsole.width=process.stdout.columns;
-		localConsole.height=process.stdout.rows;
-		process.on('resize',function(){
-			localConsole.width=process.stdout.columns;
-			localConsole.height=process.stdout.rows;
-		});
-		localConsole.log=function(m){
-			var currMessage=console.now()+"["+localConsole.source+"("+process.pid+")]:"+m;
-			localConsole.stdout(currMessage);
-			if((typeof(localConsole.syslog)=='undefined')) localConsole.syslog.write(currMessage);
-		}
-		console.error=function(m){
-			var currMessage=localConsole.now()+"["+localConsole.source+"("+process.pid+")]:"+m;
-			localConsole.stderr(currMessage);
-			if((typeof(localConsole.syslog)=='undefined')) localConsole.syslog.write(currMessage);
-		}
-		localConsole.clear=function(){localConsole.stdout(Array(localConsole.height).join('\n'));}
-		localConsole.drawDoubleLine=function(){localConsole.log(Array(localConsole.width).join('='));}
-		localConsole.drawLine=function(){localConsole.log(Array(localConsole.width).join('-'));}
-	};
+				[ -----------------------------------------------------------------
+					  NOTE: Pre-exchange of CA certificates will allow TLS communication
+						    between hosts at initialization.  The pre-exchanged CA certs
+						    may have been leftover from the last runtime.
+					  ----------------------------------------------------------------- ]
 	
-	console.create=function(src,options){
-		newConsole=new console.constructor(process.stdout);
-		console.init(newConsole,src,options);
-		return newConsole;
-	}
-	console.init(console,src,options);
-}	
+	var certificates=[];
+	
+	var peerList=loadPeerList();
+	
+	var peerConfigRefreshTimer=setInterval(
+				refreshPeerList(peerList),
+				config.peerNetCore.peerConfigRefreshInterval
+	);
+	/*
+		Event handler for file changes on peerList files.
+	 */
+	var peerRekeyTimer=setInterval(
+				peerListRekey(peerList),
+				config.peerNetCore.peerConfigRekeyInterval
+	);
+}
 
-function syslogClient(src,options){
-	/*
-		Prototype for the syslogClient
+function refreshPeerList(peerList){
+	console.log("Persisting peer list to disk.");
+	peerList.forEach(function(peer,peerId){
+		JSON.config.write(peer.address+".json",peer);
+	});
+}
+
+function loadPeerList(){
+	var peerList=JSON.config.load(config.peerNetCore.peerList);
+	if(!types.isArray(peerList)) error.raise(error.peerNetCore.invalidPeerList)
+	return peerList;
+}
+
+	
+	
+	/*		
+				1.c. Generate a new certificate authority (self-signed).
+				
+				1.d. Our first operation is to contact each peer and provide a new CA
+					 certificate and a Certificate Signing Request (CSR).  Thus, for each 
+					 peer--
+					 	1.d.1. Generate CaKey and LocalKey
+					 	1.d.2. Generate self-signed CaCert certificate.
+					 	1.d.3. Generate LocalKey CSR.
+					 	1.d.4. Connect to peer and send CaCert file and localKey CSR using
+					 	       the "registerCrypto" message.
+					 	1.d.4. Mark peer as "pendingCSRsigning."
+					 	
+				1.d. When the peer responds to "pendingCSRsigning,"
+						1.e.1. Peer sends LocalCert (signed) by peerCA.
+						1.e.2. Peer sends peerCA (public key) (self-signed).
+						1.e.3. Mark peer as "localSigned."			
 	*/
-	console.log("syslogClient is not yet implemented.");
-	/*
-		syslogClient will configure the client to--
-		
-		   -provide a write() method to open a TCP (TLS-encrypted) 
-			socket on some port specified in the config options 
-			(JSON) passed into the constructor.
-			
-		   -send a message to a target server over the above socket.
-	*/
-		
-		
 }

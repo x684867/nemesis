@@ -15,10 +15,6 @@
 	},
 	"crypto":{
 		"local":{
-			"ca":{
-				"key":"pem-string",
-				"cert":"pem-string",
-			},
 			"key":"pem-string",
 			"cert":"pem-string"
 		},

@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+echo "starting build..." && \
+cd node && { \
+	make clean && \
+	./configure && make && make install && \
+	ln -sf /usr/local/bin/node /usr/bin/node && \
+	echo "Node JS is installed." && \
+	/usr/local/bin/node -v || {
+		echo " "
+		echo "+---------------------+"
+		echo "|Something went wrong.|"
+		echo "+---------------------+"
+		echo " "
+		exit 1
+	}
+	echo "done." 
+} && \
+cd ../gnu && { \
+	make clean
+	./configure && make && make install && \
+	echo "gnuTLS is installed" || {
+		echo " "
+        echo "+---------------------+"
+		echo "|Something went wrong.|"
+		echo "+---------------------+"
+		echo " "
+		exit 1
+	} && \
+	echo "done."
+} && \
+echo "done." && \
+exit 0

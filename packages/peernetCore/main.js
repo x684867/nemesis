@@ -16,28 +16,70 @@
 */
 module.exports=function(src,options){
 
-	console.log("Phase I Peer Key Exchange Sequence (starting...)");
+	console.log("Peer Key Exchange Sequence (starting...)");
 	getPeerList().forEach(function(peer,peerId){
-			console.log("\tEstablishing trust {'peer':'"+peerId"','address':'"+peer.address+"'}");
+			console.log("\tPhase I: Establishing trust {'peer':'"+peerId"','address':'"+peer.address+"'}");
 			var openssl=require('./packages/peerNetCore/openssl.js');
-			console.log("\t\tLoading pre-shared CA");
+			
+			console.log("\t\t1.0.Loading pre-shared CA");
 			var ca=JSON.config.loadValidJSON(
 									config.peerNetCore.init.caFile,
 									config.peerNetCore.init.caPatternFile
 			);
-			console.log("\t\tGenerating tempKey");
+			
+			console.log("\t\t1.1.Generating tempKey");
 			var tmpKey=openssl.genKey();
-			console.log("\t\tGenerating tempCert");
+			
+			console.log("\t\t1.2.Sign tempCert");
 			var tmpCrt=openssl.signCert(ca.key,key);
-			console.log("\t\tExchanging keys (establishing connection)");
-			var connection=openssl.open(key,cert);
-			console.log("\t\tLocking down pre-shared CA");
+			
+			console.log("\t\t1.3.Key Exchange (Opening a connection with tmpCrt)");
+			var connection=openssl.open(tmpKey,tmpCrt);
+			
+			console.log("\t\t1.4.Locking down pre-shared CA");
 			ca.key="";
 			JSON.config.write(config.peerNetCore.init.caFile,ca);
-			console.log("\t\t
+			console.log("\tTRUST ESTABLISHED (Phase I Complete)");
+			console.log("Phase II Certificate Authority (CA) Rekey (starting...)");
+			console.log("\t\t2.0.Generate New Certificate Authority (CA) Key");
+			console.log("\t\t2.1.Sign New Certificate Authority (CA) Cert.");
+			console.log("\t\t2.2.Exchange new Certificate Authority (CA)");
+			connection.send({"caCert":ca.cert});
+			console.log("\t\t2.3.Generate New Certificate");
+			
 	});
 	
 }
+
+/*openSSL*/
+module.exports=function(){
+	genkey=function(){
+		/*Generate an elliptic curve private key*/
+		var key='';
+		return key;
+	}
+	signCert=function(caKey,key){
+		/*Sign the given Key with the provided CA*/
+		var cert='';
+		return cert;
+	}
+	open=function(key,cert){
+		/*
+			Open a TLS connection to the server.
+			Return a connection object for use
+			in communications.
+		 */
+	}
+}
+function connectionClass(url,key,cert,remoteCA){
+	this.send=function(message){
+		/*Send a message to a given target*/
+	}
+	this.listen=function(){
+		/*Listen*/
+	}
+}
+
 	
 	
 	

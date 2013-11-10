@@ -19,5 +19,10 @@
 		"code":101,
 		"type":"fatal",
 		"text":"An Invalid or empty peerList was loaded"
+	},
+	"emptySecurityConfig":{
+		"code":102,
+		"type":"fatal",
+		"text":"An empty security config file was loaded.  see ./data/peernet/security.json"
 	}
 }

@@ -15,29 +15,32 @@
 	
 */
 module.exports=function(src,options){
-	/*
-		Load all peer identities
-	*/
-	var peerList=loadPeerList();
-	/*
-		Load the local security parameters (including CA)
-	*/
-	console.log("loading security configuration.");
-	var security=JSON.config.loadValidJSON(
-											config.peerNetCore.securityFile,
-											config.peerNetCore.securityPatternFile
-	);
-	/*
-		Verify that the security parameters has at least one config.
-		Then loop until we have at least two (2) security configurations.
-		The first security configuration (security[0]) is our current (expiring)
-		Certificate authority parameters and the second security configuration
-		(security[1]) is our new re-key certificate authority.
-	*/
-	if(security.length==0)
-		error.raise(error.peerNetCore.emptySecurityConfig);
-	else
-		while(security.length < 2) peerListRekey(peerList);
+
+	console.log("Phase I Peer Key Exchange Sequence (starting...)");
+	getPeerList().forEach(function(peer,peerId){
+			console.log("\tEstablishing trust {'peer':'"+peerId"','address':'"+peer.address+"'}");
+			var openssl=require('./packages/peerNetCore/openssl.js');
+			console.log("\t\tLoading pre-shared CA");
+			var ca=JSON.config.loadValidJSON(
+									config.peerNetCore.init.caFile,
+									config.peerNetCore.init.caPatternFile
+			);
+			console.log("\t\tGenerating tempKey");
+			var tmpKey=openssl.genKey();
+			console.log("\t\tGenerating tempCert");
+			var tmpCrt=openssl.signCert(ca.key,key);
+			console.log("\t\tExchanging keys (establishing connection)");
+			var connection=openssl.open(key,cert);
+			console.log("\t\tLocking down pre-shared CA");
+			ca.key="";
+			JSON.config.write(config.peerNetCore.init.caFile,ca);
+			console.log("\t\t
+	});
+	
+}
+	
+	
+	
 	
 	/*
 	

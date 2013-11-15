@@ -12,154 +12,145 @@
 	DOCUMENTATION:
 	
 		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-PeerNetCore
-	
-*/
+
+		Generate Diffie-Hellman Keys for key exchange
+		
+		Note that we must do better.  We need elliptic curve crypto
+		keys generated here, but I do not thing the DH object allows
+		us to define which algorithm is used.
+		
+		Alternatively we could use the default Diffie-Hellman keys
+		to secure communication for a higher-security key exchange.
+ */
 module.exports=function(src,options){
 
-	console.log("Peer Key Exchange Sequence (starting...)");
-	getPeerList().forEach(function(peer,peerId){
-			console.log("\tPhase I: Establishing trust {'peer':'"+peerId"','address':'"+peer.address+"'}");
-			var openssl=require('./packages/peerNetCore/openssl.js');
-			
-			console.log("\t\t1.0.Loading pre-shared CA");
-			var ca=JSON.config.loadValidJSON(
-									config.peerNetCore.init.caFile,
-									config.peerNetCore.init.caPatternFile
-			);
-			
-			console.log("\t\t1.1.Generating tempKey");
-			var tmpKey=openssl.genKey();
-			
-			console.log("\t\t1.2.Sign tempCert");
-			var tmpCrt=openssl.signCert(ca.key,key);
-			
-			console.log("\t\t1.3.Key Exchange (Opening a connection with tmpCrt)");
-			var connection=openssl.open(tmpKey,tmpCrt);
-			
-			console.log("\t\t1.4.Locking down pre-shared CA");
-			ca.key="";
-			JSON.config.write(config.peerNetCore.init.caFile,ca);
-			console.log("\tTRUST ESTABLISHED (Phase I Complete)");
-			console.log("Phase II Certificate Authority (CA) Rekey (starting...)");
-			console.log("\t\t2.0.Generate New Certificate Authority (CA) Key");
-			console.log("\t\t2.1.Sign New Certificate Authority (CA) Cert.");
-			console.log("\t\t2.2.Exchange new Certificate Authority (CA)");
-			connection.send({"caCert":ca.cert});
-			console.log("\t\t2.3.Generate New Certificate");
-			
-	});
-	
-}
+	var crypto=require('crypto');
+	var peers=getPeerList(config.peerNetCore.init.peers);
 
-/*openSSL*/
-module.exports=function(){
-	genkey=function(){
-		/*Generate an elliptic curve private key*/
-		var key='';
-		return key;
-	}
-	signCert=function(caKey,key){
-		/*Sign the given Key with the provided CA*/
-		var cert='';
-		return cert;
-	}
-	open=function(key,cert){
-		/*
-			Open a TLS connection to the server.
-			Return a connection object for use
-			in communications.
-		 */
-	}
-}
-function connectionClass(url,key,cert,remoteCA){
-	this.send=function(message){
-		/*Send a message to a given target*/
-	}
-	this.listen=function(){
-		/*Listen*/
-	}
-}
-
-	
-	
-	
-	
-	/*
-	
-		All setup work must precede timer initialization.
-	
-	 */
-	/*
-		Event handler for file changes on peerList files.
-	 */
-	var peerConfigRefresh=setInterval(
-		refreshPeerList(peerList),
-		config.peerNetCore.peerConfigRefreshInterval
-	);
-	var caReKeyTimer=setInterval(
-		function(){
-			if(security[0].certSigned <=0){
-				console.log("retiring security[0] and generating new security[1].");
-				security[0]=security[1];
-				security[1]=generateNewSecurityConfig();
-			}else{
-				console.log("security[0] still has "+security[0].certSigned+" certificates signed.");
+	var isCAreplicationPending=false;
+	var count={
+		peerCount:peers.length,
+		ca:{
+			replication:{
+				skipped:0,
+				started:0,
+				completed:0
 			}
-			JSON.config.write(config.peerNetCore.securityFile,security);
 		},
-		config.peerNetCore.caRekeyInterval
-	);
-
-	var peerRekeyTimer=setInterval(
-		peerListRekey(peerList),
-		config.peerNetCore.peerConfigRekeyInterval
-	);
-}
-
-function refreshPeerList(peerList){
-	console.log("Persisting peer list to disk.");
-	peerList.forEach(function(peer,peerId){
-		process.nextTick(function(){
-			JSON.config.write(peer.address+".json",peer);
-		})
-	});
-}
-
-function loadPeerList(){
-	var peerList=JSON.config.load(config.peerNetCore.peerList);
-	if(!types.isArray(peerList)) error.raise(error.peerNetCore.invalidPeerList)
-	return peerList;
-}
-function peerListRekey(peerList){
-	peerList.forEach(function(peer,peerId){
-		process.nextTick(function(){
-			var ca=peer.local.ca;	/*Local certificate authority*/
-			var key=generateKey();
-			var cert=generateCertificate(key,ca);
-		})
-	});
-}
-function generateNewSecurityConfig(){
-	var key=generateKey();
-	var newConfig={
-		"created":types.now(), /*timestamp*/
-		"expires":types.now()+config.peerNetCore.caTTL, /*timestamp*/
-		"certsSigned":0,
-		"key":key,
-		"cert":generateSelfSignedCertifiate(key),
+		cert:{
+			replication:{
+				skipped:0,
+				started:0,
+				completed:0
+			}
+		
+		}
 	};
+	var ca={};
+	
+	var keyExchange=function(peer,ca){
+		if( !peer.isTrusted ){
+			if( establishDHtrust(peer) ) 
+				peer.isTrusted=true;
+			else
+				console.log("FAILED TO ESTABLISH DH TRUST WITH PEER ("+peer.address+")")
+		}
+		peerSend(peer,{"code":"caCertsend","data":ca.cert});
+	}
+	
+	var establishDHtrust=function(peer){
+		peer.isTrusted=false;
+		peer.dhPublicKey='';
+		peer.sharedSecret='';
+		peer.dh=crypto.getDiffieHellman(config.peerNetCore.init.dhGroupName);
+		peer.dh.generateKeys();
+		peer.dhPublicKey(peerUntrustedSend(peer,{"code":"dhGetPublicKey"}));
+		peer.sharedSecret=dh.computeSecret(peer.dhPublicKey());
+		if(peerUntrustedSend(peer,{"code":"dhSendPublicKey","data":peer.getPublicKey()}))
+			if(peerUntrustedSend(peer,{"code":"dhSendSecret","data":peer.sharedSecret}))
+				peer.isTrusted=true;
+		return peer.isTrusted;
+	}
+	var peerUntrustedSend(addr,msg){
+		/*
+			Net send over insecure TCP socket.
+		 */	
+	}
+	var peerSend=function(peer,msg,retry){
+		var retries=(typeof(retry)=='undefined')?3:retry;
+		if(peer.isTrusted){
+			var clearText=JSON.stringify(msg);
+			var cipherText=/*Encrypt clearText against peer.publicKey*/
+			/*
+				Use net. to send message JSON.
+			 */
+			return 'returned response';
+		}else{
+			console.log("peerSend failed.  no trust. peer="+peer.address);
+			if(retries > 0)
+				return peerSend(peer,msg,retries--);
+				for(i=0;i<100000;i++){/*do nothing*/}
+			else
+				return void(0)
+		}
+	}
+	
+	/*Periodic CA refresh by timer.  Initialize on first run.*/
+	var refreshCA=function(){
+		if(isCAreplicationPending){
+			count.ca.replication.skip++;
+			console.log("CA Replication pending. skipping. cnt="+count.ca.replication.skip);
+		}else{
+			count.ca.replication.executed++
+			var ca={key=genTLSkey(),cert=genTLScert(key,null)}
+			console.log("CA Replication starting.  cnt="+count.ca.replication.start);
+			peers.forEach(function(peer) hasCAreplicated=(keyExchange(peer,ca))?true:false;
+			count.ca.replication.completed++
+			console.log("CA Replication done.  cnt="+count.ca.replication.completed);
+		}
+	};
+	setInterval(refreshCA,config.peerNetCore.init.caRefreshInterval);
+	refreshCA();
+	
+	var refreshCertificates=function(){
+		if(isCertReplicationPending){
+			count.cert.replication.skip++
+			console.log("Cert replication pending.  skipping.  cnt="+count.cert.replication.skip);
+		}else{
+			count.cert.replication.executed++
+			console.log("Cert Replication starting.  cnt="+count.cert.replication.start);
+			peers.forEach(function(){
+				/*
+					Iterate through peers and generate peer-specific
+					certificates signed by the CA, then exchange those 
+					CA certificates with the peer.
+				*/
+				peer.key=genTLSkey();
+				peer.cert=genTLScert(key,ca.key);
+				peerSend(peer,{"code":"tlsCertSend","data":peerCert});
+			});
+			count.cert.replication.completed++
+			console.log("Cert Replication done.  cnt="+count.cert.replication.completed);
+		}
+	}
+	
+	exchangeCertificates();
+	
 }
-function generateKey(){
-	/*generate private key*/
-	var key='';
-	return key;
+
+function genTLSkey(){
+	/*
+		Generate TLS key
+	 */
+	return 'tls key';
 }
-function generateCertificate(key,ca){
-	/*generate a CSR for key and sign with ca.key*/
-	var cert='';
-	return cert;
+function genTLScert(key,ca){
+	/*
+		Sign the given TLS key with the ca key
+	 */
+	return 'signed key'
 }
-function generateSelfSignedCertificate(key){
-	var cert='';
-	return cert;
-}
+
+
+
+

@@ -8,30 +8,5 @@
 		certificates.
  */
 {
-	"address":"peer0.cluster.nemesiscloud.net",
-	"reputation":{
-		"firstOnline":0,	/*timestamp when first joined.*/
-		"lastOnline":0,		/*timestamp when last seen*/
-		"lastOffline":0,	/*timetamp when last lost*/
-		"contacts":{
-			"hits":0,
-			"misses":0
-		},
-		"replication":{
-			"hits":0,
-			"rejects":0,
-		},
-	},
-	"crypto":{
-		"local":{
-			"timestamp":0,
-			"key":"pem-string",
-			"cert":"pem-string"
-		},
-		"remote":{
-			"timestamp":0,
-			"ca":"pem-string",
-			"cert":"pem-string"
-		}
-	}
+	"address":"10.211.55.100",
 }

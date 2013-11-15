@@ -39,6 +39,10 @@ module.exports=function(){
 	 		writeJSONfile(fname,jsonObject,jsonWriteRetry);
 	 	}
 	 	JSON.config.loadValidJSON=function(oname,pname){
+	 		/*Deprecated function*/
+	 		return JSON.config.load(oname,pname);
+	 	}
+	 	JSON.config.load=function(oname,pname){
 	 	
 			p=JSON.commented.load(pname);/*Pattern File*/
 			o=JSON.commented.load(oname);/*Configuration File*/

@@ -18,22 +18,17 @@
 	"debug":true,
 	
 	"init":{
-		caFile:"/srv/nemesis/data/peerNet/security.json",
-		caPatternFile:"/srv/nemesis/data/peerNet/security.pattern.json"
+		"peers":"/srv/nemesis/data/peerNet/peers/",
+		"dhGroupName":"modp18",
+		"dhPrimeLength":1024,
+		"dhEncoding":"modp18",
+		"cipherEncoding":"base64",
+		"keyExchangePort":8080
 	},
 	"maintenance":{
+	
 	},
 	"ipc":{
+	
 	}
-	
-	
-	/*Deprecated...
-	"peerConfigRefreshInterval":71,	
-	"peerConfigRekeyInterval":3619,
-	"peerList":"/srv/nemesis/data/peerNet/peers/",
-	"peerListPatternFile":"/srv/nemesis/data/peerNet/peers.pattern.json",
-
-	"caTTL":9000, 
-
-	... */
 }

@@ -31,7 +31,9 @@
 		"logger",		/*logger and console functionality*/
 		"types",		/*standard types and type checking*/
 		"error",		/*error handling*/
+		"ciphers",		/*standard cryptography library*/
 		"process",		/*process management extensions*/
+		"webCore"		/*core webSend, webListen functionality*/
 	],
 	/*
 		Depending on launch_mode, one of the two following package sets will be loaded.

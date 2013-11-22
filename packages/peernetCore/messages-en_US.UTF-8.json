@@ -14,4 +14,11 @@
 		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-PeerNetCore
 	
 */
-{ }
+{ 
+	"InvalidPSK":{
+"There was a problem with the PSK in this host's configuration.\n"+
+					"This can occur if the system was improperly shutdown or removed\n"+
+					"from trust by other peers who during shutdown refused to issue a\n"+
+					"new PSK.\n\n"+
+					"This system must be re-joined to the cluster with a manual PSK install"
+}

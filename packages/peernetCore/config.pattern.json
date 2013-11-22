@@ -1,11 +1,4 @@
 {
 	"debug":"boolean",
-	"peerConfigRefreshInterval":"number",
-	"peerConfigRekeyInterval":"number", 
-	"peerList":"string",
-	"peerListPatternFile":"string",
-	"keyFile":"string",
-	"securityFile":"string",
-	"securityPatternFile":"string"
 
-}
+"a7cf67f76859081dbc87236e5d84edd30ebb2807"

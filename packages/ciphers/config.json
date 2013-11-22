@@ -1,0 +1,21 @@
+/*
+	Nemesis Cryptography Package Package
+	/srv/nemesis/packages/ciphers/
+	(c) 2013 Sam Caldwell.  All Rights Reserved.
+	
+	This package creates simple and easy-to-use functions for cryptography, 
+	standardized to the Nemesis project.
+	
+	USE:
+		root.*
+		
+	DOCUMENTATION:
+	
+		See https://github.com/x684867/nemesis_server/wiki/Framework:-Packages:-Ciphers
+	
+*/
+{
+	algorithm:'aes192',
+	encoding:'base64',
+	dhgroups:['modp14','modp15','modp16','modp17','modp18']
+}

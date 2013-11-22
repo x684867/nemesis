@@ -7,6 +7,7 @@
 		root.config.packages (defined by bootstrap.js).
  */
 module.exports=function( mFile , application, launch_mode ){
+
 	var pFile=mFile.replace( /json/ , 'pattern.json' );
 	
 	var fs=require('fs');

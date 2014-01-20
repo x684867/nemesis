@@ -26,7 +26,7 @@ module.exports=function(){
 	 	JSON.commented={
 		 	parse:function(jsonString){
 	 			if(typeof(jsonString)=='string')
-	 				return JSON.parse(jsonString.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm,''));
+	 				return JSON.parse(jsonString.replace(/(\/\*([\s\S]*?)\*\/)|((!http:)\/\/(.*)$)/gm,'');
 	 			else
 	 				throw new Error('jsonString is not a string as expected.');
 	 		},
